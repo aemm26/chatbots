@@ -8,19 +8,20 @@
         "start": "node app.js"
     },
     "keywords": [],
-  "dependencies": {
-    "@bot-whatsapp/bot": "latest",
-    "@bot-whatsapp/cli": "latest",
-    "@bot-whatsapp/database": "latest",
-    "@bot-whatsapp/portal": "latest",
-    "@bot-whatsapp/provider": "latest",
-    "bot-ws-plugin-openai": "1.0.5",
-    "@whiskeysockets/baileys": "^6.4.0",
-    "wa-sticker-formatter": "4.3.2",
-    "date-fns": "^2.30.0",
-    "dotenv": "^16.3.1",
-    "openai": "^3.3.0"
-  },
+    "dependencies": {
+        "@bot-whatsapp/bot": "latest",
+        "@bot-whatsapp/cli": "latest",
+        "@bot-whatsapp/database": "latest",
+        "@bot-whatsapp/portal": "latest",
+        "@bot-whatsapp/provider": "latest",
+        "chatgpt": "^4.4.0",
+        "@whiskeysockets/baileys": "^6.4.0",
+        "bot-ws-plugin-openai": "1.0.5",
+        "date-fns": "^2.30.0",
+        "dotenv": "^16.3.1",
+        "openai": "^3.3.0",
+        "wa-sticker-formatter": "4.3.2"
+            },
     "author": "",
     "license": "ISC",
     "devDependencies": {
