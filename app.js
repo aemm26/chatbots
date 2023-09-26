@@ -1,16 +1,29 @@
-const { createBot, createProvider, createFlow, addKeyword } = require('@bot-whatsapp/bot')
+const { createBot, createProvider, createFlow, addKeyword, EVENTS } = require('@bot-whatsapp/bot')
 
 const QRPortalWeb = require('@bot-whatsapp/portal')
 const BaileysProvider = require('@bot-whatsapp/provider/baileys')
 const MockAdapter = require('@bot-whatsapp/database/mock')
 /**const { client, messagemedia } = require ('baileys')*/
 
+//const chatgpt = new chatgptClass()
+const ChatGPTClass = require('./chatgpt.class.js')
+
+const ChatGPTClass2 = require('./chatgpt2.class.js')
+
+const createBotGPT = async ({ provider, database }) => {
+    return new ChatGPTClass(database, provider);
+};
+
+/**
+const createBotGPT2 = async ({ provider, database }) => {
+    return new ChatGPTClass2(database, provider);
+};
+*/
 
 const flowPrimario = addKeyword(['1', 'uno', 'siguiente']).addAnswer(['📄 Cómo te podemos ayudar? 🤔'])
 const flowSecundario = addKeyword(['2', 'dos']).addAnswer(['📄 Te agradecemos habernos escrito!'])
 const flowTerciario = addKeyword(['9', 'Nueve', 'nueve']).addAnswer(['📄 Te regresaremos al Menú principal!', 'Por favor ingresa 9 nuevamente para ir al menú principal!'])
-
-
+const flowcero = addKeyword(['0', 'cero']).addAnswer('Ya avisamos a Kike que lo estás esperando!', 'En Breve te contesta! 😏')
 
 const flowGracias = addKeyword(['Gracias', 'gracias', 'grac']).addAnswer(
     [
@@ -43,44 +56,102 @@ const flowInfo = addKeyword(['Información', 'info', 'informacion'])
 
 
 
-const flowno = addKeyword(['no']).addAnswer(
-    ['🤪 En breve, Enrique, te escribirá el mismo', '', '\n*9* Para regresar al Menú principal','','*0* para avisar a Enrique sobre tu espera.'],
+const flowno = addKeyword(['no'])
+    .addAnswer('Gracias por comunicarte con nosotros!!')
+    .addAnswer(['🤪 En breve, Enrique, te escribirá el mismo', '', '\n*9* Para regresar al Menú principal','','*0* para avisar a Enrique sobre tu espera.'],
     null,
     null,
-    [flowTerciario, flowGracias]
+    [flowTerciario, flowGracias, flowcero]
 )
 
 
 
 const flowsi = addKeyword('si') 
-    .addAnswer('Los *Chatbots* 🤖 en WhatsApp pueden ayudar a mejorar la eficiencia en la atención al cliente, reducir costos y aumentar la satisfacción de tus clientes al proporcionarles respuestas rápidas y precisas las 24 horas del día, los 7 días de la semana.', { delay: 500, })
+    .addAnswer('Los *Chatbots* 🤖 en WhatsApp pueden ayudar a mejorar la eficiencia en la atención al cliente, reducir costos y aumentar la satisfacción de tus clientes al proporcionarles respuestas rápidas y precisas las 24 horas del día, los 7 días de la semana.', { delay: 300, })
     .addAnswer(['Beneficios de integrar un *Chatbot* 🤖 para la atención de tus clientes:',
         ' - Atención rápida, oportuna, personalizada y si tú así lo necesitas 24/7.',
         ' - Respuestas rápidas a preguntas comunes (FAQ´s)de tus Productos y Servicios.',
         ' - Ahorro y aprovechamiento de recursos.',
-        ' - Recopilación de datos valiosos de prospectos y clientes.'], { delay: 4000, })
-    .addAnswer('Te interesaría tener mayor información sobre mi producto y servicios de *ChatBot*? 🤖 ', { delay: 4000, })
+        ' - Recopilación de datos valiosos de prospectos y clientes.'], { delay: 7000, })
+    .addAnswer('Te interesaría tener mayor información sobre mi producto y servicios de *ChatBot*? 🤖 ', { delay: 8000, })
     .addAnswer(['En breve, Enrique te escribirá, *Gracias por tu paciencia!* 🤖🙏🏽',
         'Escribe *Info* si necesitas información de nuestros otros servicios. 🤝'],
-        { delay: 2000, },
+        { delay: 7000, },
         null,
         [flowGracias, flowInfo]
     )   
-
-
-const flowPrincipal = addKeyword(['hola', 'holaa', 'holaaa', 'holaaaa', 'días', 'dias', 'tardes', 'noches'])
+    
+    const flowPrincipal = addKeyword([EVENTS.WELCOME, EVENTS.MEDIA, EVENTS.VOICE_NOTE, EVENTS.DOCUMENT, EVENTS.LOCATION, EVENTS.ACTION])  //(['hola', 'holaa', 'holaaa', 'holaaaa', 'días', 'dias', 'tardes', 'noches'])
     .addAnswer('👽 Hola Terricola! 🖖🏽')
     .addAnswer('🤖 🦾 *Soy el Asistente Chatbot* de Enrique 🤖 👋🏾', { delay: 2500, })
     .addAnswer(' 🫵 Bienvenida(o) 🫵,', { delay: 2500, })
-    .addAnswer('En un momento Enrique te escribirá... ⚡ *Gracias por esperar!* ⚡', { delay: 5000, })
+    .addAnswer('En un momento Enrique te escribirá... ⚡ *Gracias por esperar!* ⚡', { delay: 4000, })
     .addAnswer('🤔 Mientras tanto... ¿Tienes un negocio? ⚡', { delay: 5000, })
-    .addAnswer('🤔 ¿Conoces las ventajas que te da implementar un 🤖 *ChatBot* 🤖 en tu WhatsApp para atención a Clientes?', { delay: 1000, })
+    .addAnswer('🤔 ¿Conoces las ventajas que te da implementar un 🤖 *ChatBot* 🤖 en tu WhatsApp para atención a Clientes?', { delay: 8000, })
     .addAnswer(['🤔 ¿Te gustaría conocer más sobre 🤖 *ChatBot de Whatsapp* 🤖?', 'Escribe *Si* para conocer más, o *No* para la atención de Enrique'], 
-    { delay: 2000, },
+    { delay: 8000, },
     null,
-    [flowsi, flowno, flowGracias, flowInfo]
+    [flowsi, flowno, flowGracias, flowInfo, flowSecundario]
     )
 
+/**    
+    const flowPrincipal = addKeyword([EVENTS.WELCOME, EVENTS.MEDIA, EVENTS.VOICE_NOTE, EVENTS.DOCUMENT, EVENTS.LOCATION, EVENTS.ACTION])  //(['hola', 'holaa', 'holaaa', 'holaaaa', 'días', 'dias', 'tardes', 'noches'])
+    .addAnswer('👽 Hola Terricola! 🖖🏽')
+    .addAnswer('🤖 🦾 *Soy el Asistente Chatbot* de Enrique 🤖 👋🏾', { delay: 2500, })
+    .addAnswer(' 🫵 Bienvenida(o) 🫵,', { delay: 2500, })
+
+    if (addKeyword() == addKeyword(EVENTS.WELCOME)) {
+       flowPrincipal
+        .addAnswer('En un momento Enrique te escribirá... ⚡ *Gracias por esperar!* ⚡', { delay: 4000, })
+        .addAnswer('🤔 Mientras tanto... ¿Tienes un negocio? ⚡', { delay: 5000, })
+        .addAnswer('🤔 ¿Conoces las ventajas que te da implementar un 🤖 *ChatBot* 🤖 en tu WhatsApp para atención a Clientes?', { delay: 8000, })
+        .addAnswer(['🤔 ¿Te gustaría conocer más sobre 🤖 *ChatBot de Whatsapp* 🤖?', 'Escribe *Si* para conocer más, o *No* para la atención de Enrique'], 
+        { delay: 8000, },
+        null,
+        [flowsi, flowno, flowGracias, flowInfo, flowSecundario]
+        )
+    } else if (addKeyword() == addKeyword(EVENTS.MEDIA)) {
+        flowPrincipal
+               .addAnswer(['🤔 Analizando la imagen... 🤖🤖', '⏰ un momento...'], { delay: 2500, }) 
+               .addAnswer('En un momento Enrique te escribirá... ⚡ *Gracias por esperar!* ⚡',
+               { delay: 7000, },
+               null,
+               [flowsi, flowno, flowGracias, flowInfo, flowSecundario]  
+        )
+    } else if (addKeyword() == addKeyword(EVENTS.VOICE_NOTE)) {
+        flowPrincipal     
+               .addAnswer(['🤔 Escuchando tu Nota de Voz... 🤖🤖', '⏰ un momento...'], { delay: 2500, })
+               .addAnswer('En un momento Enrique te responderá... ⚡ *Gracias por esperar!* ⚡', 
+               { delay: 7000, },
+               null,
+               [flowsi, flowno, flowGracias, flowInfo, flowSecundario]
+        ) 
+    } else if (addKeyword() == addKeyword(EVENTS.DOCUMENT)) {
+        flowPrincipal
+               .addAnswer(['🤔 Leyendo tu documento... 🤖🤖', '⏰ un momento...'], { delay: 2500, })
+               .addAnswer('En un momento Enrique te responderá... ⚡ *Gracias por esperar!* ⚡', 
+               { delay: 7000, },
+               null,
+               [flowsi, flowno, flowGracias, flowInfo, flowSecundario]
+        ) 
+    } else if (addKeyword() == addKeyword(EVENTS.LOCATION)) {
+        flowPrincipal
+              .addAnswer(['🤔 Ontas...? 🤖🤖', '⏰ un momento...'], { delay: 2500, })
+              .addAnswer('En un momento Enrique te responderá... ⚡ *Gracias por esperar!* ⚡', 
+              { delay: 7000, },
+              null,
+              [flowsi, flowno, flowGracias, flowInfo, flowSecundario]
+        ) 
+    } else if (addKeyword() == addKeyword(EVENTS.ACTION)) {
+        flowPrincipal
+               .addAnswer(['🤔 No entendí tu mensaje... 🤖🤖', '⏰ un momento...'], { delay: 2500, })
+               .addAnswer('En un momento Enrique te responderá... ⚡ *Gracias por esperar!* ⚡', 
+               { delay: 7000, },
+               null,
+               [flowsi, flowno, flowGracias, flowInfo, flowSecundario]
+        ) 
+    }
+*/
 
     /**👋🏾🫵🏽👏🏽👍🏽😏🤔😎🫡🤑🙌 🤡👽🤖 🤔🫣  🖖🏽🤘🏼🫰🏼🤝🦾⚡ 🙏🏽*/
 
